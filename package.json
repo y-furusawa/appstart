@@ -4,9 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "tsc": "tsc -p",
-    "browserify": "browserify ./app/main.js -t babelify -o ./public/assets/js/bundle.js",
-    "build": "tsc && npm run browserify"
+    "copy:shimjs": "cp -Rp ./node_modules/core-js/client/shim.min.js public/assets/js/",
+    "copy:zonejs": "cp -Rp ./node_modules/zone.js/dist/zone.js public/assets/js/",
+    "copy:reflectjs": "cp -Rp ./node_modules/reflect-metadata/Reflect.js public/assets/js/",
+    "copy:html": "find ./app -name '*.html' -not -name index.html -print0 | xargs -0 -J % cp -p % public/assets/html/",
+    "copy:css": "find ./app -name '*.css' -print0 | xargs -0 -J % cp -p % public/assets/css/",
+    "copy:index": "cp -p ./app/index.html public/",
+    "copy": "npm-run-all copy:*",
+    "build:clean": "rm -rf ./build ./public",
+    "build:mkdir": "mkdir -p public public/assets public/assets/css public/assets/html public/assets/js",
+    "build:link": "npm run copy",
+    "build:tsc": "tsc",
+    "build:browserify": "browserify ./build/main.js -t babelify -o ./public/assets/js/bundle.js",
+    "build": "npm-run-all build:*"
   },
   "babel": {
     "presets": [
@@ -17,6 +27,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^6.0.46",
     "babel-core": "^6.13.2",
     "babel-eslint": "^6.1.2",
     "babel-preset-angular2": "^0.0.2",
